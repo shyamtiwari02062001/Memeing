@@ -2,8 +2,9 @@ import React from "react";
 import { StyleSheet, Text, View, Image, Button } from "react-native";
 import * as Google from "expo-google-app-auth";
 import Home from "./Pages/Home";
+import axios from 'axios';
 export default class App extends React.Component {
-  constructor(props) {
+    constructor(props) {
     super(props);
     this.state = {
       signedIn: false,
@@ -11,12 +12,20 @@ export default class App extends React.Component {
       photoUrl: "",
     };
   }
+  componentDidMount(){
+    axios.get('https://memesap.herokuapp.com/')
+    .then((response) => {
+      console.log(...response.data);
+     
+      
+    });
+   
+  }
   signIn = async () => {
     try {
       const result = await Google.logInAsync({
         androidClientId:
           "265455786512-dthodismibrhetj7c35ot274083a8hga.apps.googleusercontent.com",
-        //iosClientId: YOUR_CLIENT_ID_HERE,  <-- if you use iOS
         scopes: ["profile", "email"],
       });
 
@@ -25,6 +34,7 @@ export default class App extends React.Component {
           signedIn: true,
           name: result.user.name,
           photoUrl: result.user.photoUrl,
+          email:result.user.email
         });
       } else {
         console.log("cancelled");
@@ -37,7 +47,7 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         {this.state.signedIn ? (
-          <LoggedInPage name={this.state.name} photoUrl={this.state.photoUrl} />
+          <LoggedInPage  name={this.state.name} photoUrl={this.state.photoUrl} email={this.state.email}/>
         ) : (
           <LoginPage signIn={this.signIn} />
         )}
@@ -56,7 +66,8 @@ const LoginPage = (props) => {
 };
 
 const LoggedInPage = (props) => {
-  return <Home />;
+  console.log(props.name)
+  return <Home name={props.name} photoUrl={props.photoUrl} email={props.email}  />;
 };
 
 const styles = StyleSheet.create({

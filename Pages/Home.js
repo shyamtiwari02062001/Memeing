@@ -15,7 +15,6 @@ import Add from "./Add";
 import Search from "./Search";
 import Create from "./Create";
 import Profile from "./Profile";
-
 const DATA = [
   {
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
@@ -69,6 +68,7 @@ const DATA = [
     id: "12",
     title: "Shyam",
   },
+
 ];
 
 const Item = ({ title }) => (
@@ -79,6 +79,8 @@ const Item = ({ title }) => (
   </View>
 );
 export class Home extends Component {
+   
+  
   constructor(props) {
     super(props);
 
@@ -109,8 +111,32 @@ export class Home extends Component {
     this.setState({
       number3: 2,
     });
+    
   };
+  componentDidMount(){
+    fetch('https://memesap.herokuapp.com/api', {
+	method: 'POST',
+	body: JSON.stringify({
+    name:this.props.name,
+    photoUrl:this.props.photoUrl,
+    email:this.props.email,
+	}),
+	headers: {
+		'Content-type': 'application/json; charset=UTF-8'
+	}
+}).then(function (response) {
+	if (response.ok) {
+		return response.json();
+	}
+	return Promise.reject(response);
+}).then(function (data) {
+	console.log(data);
+}).catch(function (error) {
+	console.warn('Something went wrong.', error);
+});
 
+    
+  }
   render() {
     const renderItem = ({ item }) => <Item title={item.title} />;
     if (this.state.number === 2) {
@@ -126,7 +152,7 @@ export class Home extends Component {
     if (this.state.number3 === 2) {
       return <Profile />;
     }
-
+    
     return (
       <SafeAreaView style={{ flex: 1, alignItems: "center" }}>
         <View style={styles.header}>

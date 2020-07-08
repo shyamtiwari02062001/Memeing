@@ -13,6 +13,8 @@ import Add from "./Add";
 import Search from "./Search";
 import Create from "./Create";
 export class Profile extends Component {
+ 
+ 
   constructor(props) {
     super(props);
 
@@ -21,6 +23,7 @@ export class Profile extends Component {
       number1: 1,
       number2: 1,
       number3: 1,
+      data:[]
     };
   }
   clickHandler = () => {
@@ -44,6 +47,7 @@ export class Profile extends Component {
       number3: 2,
     });
   };
+  
   render() {
     if (this.state.number === 2) {
       return <Home />;
@@ -59,6 +63,7 @@ export class Profile extends Component {
     }
     return (
       <SafeAreaView style={{ flex: 1, alignItems: "center" }}>
+        <View><Text>{this.state.data}</Text></View>
         <View style={styles.footer}>
           <TouchableOpacity onPress={this.clickHandler}>
             <Image
