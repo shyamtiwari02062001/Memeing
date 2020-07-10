@@ -15,7 +15,7 @@ export default class App extends React.Component {
   componentDidMount(){
     axios.get('https://memesap.herokuapp.com/')
     .then((response) => {
-      console.log(...response.data);
+      console.log(response.data);
      
       
     });
