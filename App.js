@@ -15,9 +15,7 @@ export default class App extends React.Component {
   componentDidMount(){
     axios.get('https://memesap.herokuapp.com/')
     .then((response) => {
-      console.log(response.data);
-     
-      
+      console.log(response.data);      
     });
    
   }
@@ -67,7 +65,28 @@ const LoginPage = (props) => {
 
 const LoggedInPage = (props) => {
   console.log(props.name)
-  return <Home name={props.name} photoUrl={props.photoUrl} email={props.email}  />;
+    fetch('https://memesap.herokuapp.com/api', {
+	method: 'POST',
+	body: JSON.stringify({
+    name:props.name,
+    photoUrl:props.photoUrl,
+    email:props.email,
+	}),
+	headers: {
+		'Content-type': 'application/json; charset=UTF-8'
+	}
+}).then(function (response) {
+	if (response.ok) {
+		return response.json();
+	}
+	return Promise.reject(response);
+}).then(function (data) {
+	console.log(data);
+}).catch(function (error) {
+	console.warn('Something went wrong.', error);
+});
+
+  return <Home   />;
 };
 
 const styles = StyleSheet.create({

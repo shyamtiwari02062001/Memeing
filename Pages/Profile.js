@@ -7,18 +7,21 @@ import {
   TouchableOpacity,
   Image,
   SafeAreaView,
+  ActivityIndicator,
+  FlatList,
 } from "react-native";
 import Home from "./Home";
 import Add from "./Add";
 import Search from "./Search";
 import Create from "./Create";
 export class Profile extends Component {
- 
- 
+  
   constructor(props) {
     super(props);
 
     this.state = {
+      data: [],
+      isLoading: true,
       number: 1,
       number1: 1,
       number2: 1,
@@ -48,6 +51,19 @@ export class Profile extends Component {
     });
   };
   
+  componentDidMount(){
+    fetch('https://memesap.herokuapp.com/')
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({ data: json.profile });
+        console.log(...this.state.data);
+      })
+      .catch((error) => console.error(error))
+      .finally(() => {
+        this.setState({ isLoading: false });
+      });
+  }
+ 
   render() {
     if (this.state.number === 2) {
       return <Home />;
@@ -61,9 +77,24 @@ export class Profile extends Component {
     if (this.state.number3 === 2) {
       return <Create />;
     }
+    const { data, isLoading } = this.state;
     return (
       <SafeAreaView style={{ flex: 1, alignItems: "center" }}>
-        <View><Text>{this.state.data}</Text></View>
+         <View style={styles.container}>
+      {isLoading ? <ActivityIndicator/> : (
+        <FlatList
+          data={data}
+          keyExtractor={(item) => item.toString()}
+          renderItem={({ item }) => (
+            <View >
+            <Text>{item.name}</Text>
+            <Text>{item.email}</Text>            
+            <Image source={{uri:`${item.photourl}`}} style={{ height:250, width:250 }}/>
+            </View>
+          )}
+        />
+      )}
+    </View>
         <View style={styles.footer}>
           <TouchableOpacity onPress={this.clickHandler}>
             <Image
@@ -102,6 +133,11 @@ export class Profile extends Component {
 }
 
 const styles = StyleSheet.create({
+  container:{
+    flex:1,
+    justifyContent:'center',
+    alignItems:'center'
+  },
   footer: {
     flex: 1,
     flexDirection: "row",

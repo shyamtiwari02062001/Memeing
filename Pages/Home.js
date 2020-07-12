@@ -113,30 +113,8 @@ export class Home extends Component {
     });
     
   };
-  componentDidMount(){
-    fetch('https://memesap.herokuapp.com/api', {
-	method: 'POST',
-	body: JSON.stringify({
-    name:this.props.name,
-    photoUrl:this.props.photoUrl,
-    email:this.props.email,
-	}),
-	headers: {
-		'Content-type': 'application/json; charset=UTF-8'
-	}
-}).then(function (response) {
-	if (response.ok) {
-		return response.json();
-	}
-	return Promise.reject(response);
-}).then(function (data) {
-	console.log(data);
-}).catch(function (error) {
-	console.warn('Something went wrong.', error);
-});
 
-    
-  }
+ 
   render() {
     const renderItem = ({ item }) => <Item title={item.title} />;
     if (this.state.number === 2) {
