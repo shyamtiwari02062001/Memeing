@@ -51,18 +51,18 @@ export class Profile extends Component {
     });
   };
   
-  componentDidMount(){
-    fetch('https://memesap.herokuapp.com/')
-      .then((response) => response.json())
-      .then((json) => {
-        this.setState({ data: json.profile });
-        console.log(...this.state.data);
-      })
-      .catch((error) => console.error(error))
-      .finally(() => {
-        this.setState({ isLoading: false });
-      });
-  }
+  // componentDidMount(){
+  //   fetch('https://memesap.herokuapp.com/')
+  //     .then((response) => response.json())
+  //     .then((json) => {
+  //       this.setState({ data: json.profile });
+  //       console.log(...this.state.data);
+  //     })
+  //     .catch((error) => console.error(error))
+  //     .finally(() => {
+  //       this.setState({ isLoading: false });
+  //     });
+  // }
  
   render() {
     if (this.state.number === 2) {

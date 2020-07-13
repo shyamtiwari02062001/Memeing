@@ -80,16 +80,16 @@ class Add extends Component {
     }
   };
 postImage=()=>{
-  fetch('https://memesap.herokuapp.com/')
-      .then((response) => response.json())
-      .then((json) => {
-        this.setState({ data: json.profile });
-        console.log(...this.state.data);
-      })
-      .catch((error) => console.error(error))
-      .finally(() => {
-        this.setState({ isLoading: false });
-      });
+  // fetch('https://memesap.herokuapp.com/')
+  //     .then((response) => response.json())
+  //     .then((json) => {
+  //       this.setState({ data: json.profile });
+  //       console.log(...this.state.data);
+  //     })
+  //     .catch((error) => console.error(error))
+  //     .finally(() => {
+  //       this.setState({ isLoading: false });
+  //     });
       this.setState({
         submit:2
       })
