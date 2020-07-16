@@ -12,13 +12,13 @@ export default class App extends React.Component {
       photoUrl: "",
     };
   }
-  // componentDidMount(){
-  //   axios.get('https://memesap.herokuapp.com/')
-  //   .then((response) => {
-  //     console.log(response.data);      
-  //   });
+  componentDidMount(){
+    axios.get('http://192.168.42.194:5000/')
+    .then((response) => {
+      console.log(response.data);      
+    });
    
-  // }
+  }
   signIn = async () => {
     try {
       const result = await Google.logInAsync({
@@ -64,27 +64,20 @@ const LoginPage = (props) => {
 };
 
 const LoggedInPage = (props) => {
-  console.log(props.name)
-//     fetch('https://memesap.herokuapp.com/api', {
-// 	method: 'POST',
-// 	body: JSON.stringify({
-//     name:props.name,
-//     photoUrl:props.photoUrl,
-//     email:props.email,
-// 	}),
-// 	headers: {
-// 		'Content-type': 'application/json; charset=UTF-8'
-// 	}
-// }).then(function (response) {
-// 	if (response.ok) {
-// 		return response.json();
-// 	}
-// 	return Promise.reject(response);
-// }).then(function (data) {
-// 	console.log(data);
-// }).catch(function (error) {
-// 	console.warn('Something went wrong.', error);
-// });
+  console.log(props)
+    fetch('http://192.168.42.194:5000/api/', {
+	method: 'POST',
+	body: JSON.stringify({
+    name:props.name,
+    photoUrl:props.photoUrl,
+    email:props.email,
+	}),
+	headers: {
+		'Content-type': 'application/json; charset=UTF-8'
+	}
+}).catch(function (error) {
+	console.warn('Something went wrong.', error);
+});
 
   return <Home   />;
 };

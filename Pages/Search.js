@@ -6,6 +6,8 @@ import {
   Dimensions,
   TouchableOpacity,
   Image,
+  SafeAreaView,
+  TextInput,
 } from "react-native";
 import Home from "./Home";
 import Add from "./Add";
@@ -59,6 +61,13 @@ class Search extends Component {
     }
 
     return (
+      <SafeAreaView style={{ flex: 1, alignItems: "center" }}>
+        <View style={styles.header}>
+        <TextInput
+      style={styles.search}
+      // onChangeText={text => onChangeText(text)}
+    />
+        </View>
       <View style={styles.footer}>
         <TouchableOpacity onPress={this.clickHandler}>
           <Image
@@ -91,11 +100,29 @@ class Search extends Component {
           />
         </TouchableOpacity>
       </View>
+      </SafeAreaView>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  header: {
+    flex: 1,
+    position: "absolute",
+    top: 30,
+    width: Dimensions.get("window").width,
+    alignItems: "center",
+    height: "8%",
+    justifyContent: "center",
+  },
+  search:{ 
+  width: '80%',
+  borderRadius:20,
+  height: 40, 
+  borderColor: 'gray', 
+  borderWidth: 1 ,
+  paddingLeft:20,
+},
   footer: {
     flex: 1,
     flexDirection: "row",

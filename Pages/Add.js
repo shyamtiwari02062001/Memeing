@@ -26,6 +26,7 @@ class Add extends Component {
       number2: 1,
       number3: 1,
       submit:1,
+      data:'',
       image:null
     };
   }
@@ -50,19 +51,18 @@ class Add extends Component {
       number3: 2,
     });
   };
-  componentDidMount() {
-    this.getPermissionAsync();
+  componentDidMount(){
+    fetch('http://192.168.42.194:5000/')
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({ data: json.profile });
+        console.log(...this.state.data);
+      })
+      .catch((error) => console.error(error))
+      .finally(() => {
+        this.setState({ isLoading: false });
+      });
   }
-
-  getPermissionAsync = async () => {
-    if (Constants.platform.ios) {
-      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-      if (status !== 'granted') {
-        alert('Sorry, we need camera roll permissions to make this work!');
-      }
-    }
-  };
-
   _pickImage = async () => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -80,19 +80,58 @@ class Add extends Component {
     }
   };
 postImage=()=>{
-  // fetch('https://memesap.herokuapp.com/')
-  //     .then((response) => response.json())
-  //     .then((json) => {
-  //       this.setState({ data: json.profile });
-  //       console.log(...this.state.data);
-  //     })
-  //     .catch((error) => console.error(error))
-  //     .finally(() => {
-  //       this.setState({ isLoading: false });
-  //     });
-      this.setState({
-        submit:2
-      })
+  let localUri = this.state.image;
+  let filename = localUri.split('/').pop();
+
+  // Infer the type of the image
+  let match = /\.(\w+)$/.exec(filename);
+  let type = match ? `image/${match[1]}` : `image`;
+
+  // Upload the image using the fetch and FormData APIs
+  let formData = new FormData();
+  // Assume "photo" is the name of the form field the server expects
+  formData.append('photo', { uri: localUri, name: filename, type });
+  fetch('http://192.168.42.194:5000/upload/', {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'content-type': 'multipart/form-data',
+    },
+  })
+  this.uploadData();
+}
+cancelPost=()=>{
+  this.setState({
+    image:null
+  })
+}
+uploadData=()=>{
+  let jsonData = this.state.data;
+  let name;
+  let photourl;
+  let email;
+for (var i = 0; i < jsonData.length; i++) {
+    var counter = jsonData[i];
+    name=counter.name;
+    photourl=counter.photourl;
+    email=counter.email;
+}
+fetch('http://192.168.42.194:5000/details/', {
+	method: 'POST',
+	body: JSON.stringify({
+    name:name,
+    photourl:photourl,
+    email:email,
+	}),
+	headers: {
+		'Content-type': 'application/json; charset=UTF-8'
+	}
+}).catch(function (error) {
+	console.warn('Something went wrong.', error);
+});
+  this.setState({
+    submit:2
+  })
 }
   render() {
     if (this.state.submit === 2) {
@@ -114,11 +153,11 @@ postImage=()=>{
     let { image } = this.state;
     return (
       <View style={styles.container}>
-        <View>
+        <View >
         <View style={{justifyContent:'center',alignItems:'center',padding:30}}>
         <TouchableHighlight
       style={{
-        width: Dimensions.get("window").width,
+        width:'140%',
         padding:'5%',
         backgroundColor:'#68a0cf',
         borderRadius:10,
@@ -133,13 +172,27 @@ postImage=()=>{
     <View style={{justifyContent:'center',alignItems:'center',padding:30}}>
         {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
         </View>
-        <View style={{justifyContent:'center',alignItems:'center',paddingTop:'10%'}}>
+        <View style={{justifyContent:'space-around',alignItems:'center',paddingTop:'10%',flexDirection:'row'}}>
         <TouchableHighlight
       style={{
-        width: '30%',
-        padding:10,
+        width: '40%',
+        padding:5,
         justifyContent:'center',
-        backgroundColor:'#68a0cf',
+        backgroundColor:'red',
+        borderRadius:10,
+        borderWidth: 1,
+        borderColor: '#fff'
+      }}
+      onPress={this.cancelPost}
+      underlayColor='#fff'>
+        <Text style={styles.submitText}>Cancel</Text>
+    </TouchableHighlight>
+    <TouchableHighlight
+      style={{
+        width: '40%',
+        padding:5,
+        justifyContent:'center',
+        backgroundColor:'green',
         borderRadius:10,
         borderWidth: 1,
         borderColor: '#fff'

@@ -26,7 +26,6 @@ export class Profile extends Component {
       number1: 1,
       number2: 1,
       number3: 1,
-      data:[]
     };
   }
   clickHandler = () => {
@@ -51,18 +50,18 @@ export class Profile extends Component {
     });
   };
   
-  // componentDidMount(){
-  //   fetch('https://memesap.herokuapp.com/')
-  //     .then((response) => response.json())
-  //     .then((json) => {
-  //       this.setState({ data: json.profile });
-  //       console.log(...this.state.data);
-  //     })
-  //     .catch((error) => console.error(error))
-  //     .finally(() => {
-  //       this.setState({ isLoading: false });
-  //     });
-  // }
+  componentDidMount(){
+    fetch('http://192.168.42.194:5000/')
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({ data: json.profile });
+        console.log(...this.state.data);
+      })
+      .catch((error) => console.error(error))
+      .finally(() => {
+        this.setState({ isLoading: false });
+      });
+  }
  
   render() {
     if (this.state.number === 2) {

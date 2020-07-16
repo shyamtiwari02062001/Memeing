@@ -8,79 +8,15 @@ import {
   Image,
   SafeAreaView,
   FlatList,
-  ScrollView,
+  ActivityIndicator,
+  AppRegistry
 } from "react-native";
-import { Card } from "react-native-elements";
+import {Card} from 'react-native-elements'
 import Add from "./Add";
 import Search from "./Search";
 import Create from "./Create";
 import Profile from "./Profile";
-const DATA = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    title: "First Item",
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    title: "Second Item",
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    title: "Third Item",
-  },
-  {
-    id: "2",
-    title: "ShyamJi",
-  },
-  {
-    id: "3",
-    title: "ShyamTiwari",
-  },
-  {
-    id: "4",
-    title: "Shyam",
-  },
-  {
-    id: "6",
-    title: "Shyam",
-  },
-  {
-    id: "7",
-    title: "Shyam",
-  },
-  {
-    id: "8",
-    title: "Shyam",
-  },
-  {
-    id: "9",
-    title: "Shyam",
-  },
-  {
-    id: "10",
-    title: "Shyam",
-  },
-  {
-    id: "11",
-    title: "Shyam",
-  },
-  {
-    id: "12",
-    title: "Shyam",
-  },
-
-];
-
-const Item = ({ title }) => (
-  <View style={styles.item}>
-    <Card style={styles.card}>
-      <Text>{title}</Text>
-    </Card>
-  </View>
-);
 export class Home extends Component {
-   
-  
   constructor(props) {
     super(props);
 
@@ -89,6 +25,10 @@ export class Home extends Component {
       number1: 1,
       number2: 1,
       number3: 1,
+      data: [],
+      like:'../assets/like.png',
+      dislike:'',
+      isLoading: true
     };
   }
   clickHandler = () => {
@@ -113,10 +53,20 @@ export class Home extends Component {
     });
     
   };
-
+  componentDidMount(){
+    fetch('http://192.168.42.194:5000/post')
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({ data: json.post });
+        console.log(this.state);
+      })
+      .catch((error) => console.error(error))
+      .finally(() => {
+        this.setState({ isLoading: false });
+      });
+  }
  
   render() {
-    const renderItem = ({ item }) => <Item title={item.title} />;
     if (this.state.number === 2) {
       return <Add />;
     }
@@ -130,18 +80,58 @@ export class Home extends Component {
     if (this.state.number3 === 2) {
       return <Profile />;
     }
-    
+    let path="../assets/like.png";
+    const { data, isLoading } = this.state;
     return (
       <SafeAreaView style={{ flex: 1, alignItems: "center" }}>
         <View style={styles.header}>
           <Text style={{ fontSize: 37 }}>Memeing</Text>
         </View>
+        <View style={styles.container}>
+      {isLoading ? <ActivityIndicator/> : (
         <FlatList
-          data={DATA}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          style={styles.flatlist}
+        style={styles.flatlist}
+          data={data}
+          keyExtractor={(item, index) => String(index)}
+          renderItem={({ item }) => (
+            <Card>
+            <View style={{flexDirection:'row',alignItems:'center'}}>
+                <Image source={{uri:`${item.photourl}`}} style={{ height:50, width:50, borderRadius:30,marginRight:10 }}/>
+                <Text style={{fontSize:17}}>{item.name}</Text>          
+            </View>
+            <View
+            style={{
+              marginTop:5,
+              borderBottomColor: '#f0ece3',
+              borderBottomWidth: 1,
+            }}
+          />
+          <View style={{flex:10,justifyContent:'center',marginTop:10,marginBottom:10}}>
+            <Image source={{uri:`${item.photopath}`}} style={{ height:345, width:300 }}/>
+          </View>
+          <View
+            style={{
+              marginBottom:5,
+              borderBottomColor: '#f0ece3',
+              borderBottomWidth: 0.25,
+            }}
+          />
+          <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-around'}}>
+            <TouchableOpacity>
+                <Image source={require("../assets/like.png")} style={{ height:30, width:30,marginRight:15}}/>      
+            </TouchableOpacity>
+            <TouchableOpacity>
+                <Image source={require("../assets/dislike.png")} style={{ height:30, width:30,marginRight:15}}/>      
+            </TouchableOpacity>
+            <TouchableOpacity>
+                <Image source={require("../assets/share.png")} style={{ height:30, width:30,marginRight:15}}/>      
+            </TouchableOpacity>
+            </View>
+            </Card>
+          )}
         />
+      )}
+    </View>
         <View style={styles.footer}>
           <TouchableOpacity>
             <Image
@@ -202,12 +192,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     width: Dimensions.get("window").width,
   },
-  card: {},
   flatlist: {
     marginTop: "15%",
     width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height,
+    marginBottom:'20%'
   },
+  card:{
+    flexWrap: 'wrap',       
+    justifyContent: 'space-around',
+  }
 });
 
 export default Home;
