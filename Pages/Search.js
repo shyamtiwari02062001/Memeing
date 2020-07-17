@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingHorizontal: 10,
     position: "absolute",
-    bottom: 3,
+    bottom: 0,
     height: "8%",
     alignItems: "center",
     backgroundColor: "#DDDDDD",

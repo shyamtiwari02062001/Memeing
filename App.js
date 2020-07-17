@@ -75,9 +75,7 @@ const LoggedInPage = (props) => {
 	headers: {
 		'Content-type': 'application/json; charset=UTF-8'
 	}
-}).catch(function (error) {
-	console.warn('Something went wrong.', error);
-});
+})
 
   return <Home   />;
 };

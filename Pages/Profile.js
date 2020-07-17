@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   FlatList,
 } from "react-native";
+import {Card} from 'react-native-elements'
 import Home from "./Home";
 import Add from "./Add";
 import Search from "./Search";
@@ -21,6 +22,7 @@ export class Profile extends Component {
 
     this.state = {
       data: [],
+      postData:[],
       isLoading: true,
       number: 1,
       number1: 1,
@@ -61,6 +63,16 @@ export class Profile extends Component {
       .finally(() => {
         this.setState({ isLoading: false });
       });
+      fetch('http://192.168.42.194:5000/postDetails')
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({ postData: json.post });
+        console.log(...this.state.postData);
+      })
+      .catch((error) => console.error(error))
+      .finally(() => {
+        this.setState({ isLoading: false });
+      });
   }
  
   render() {
@@ -76,23 +88,47 @@ export class Profile extends Component {
     if (this.state.number3 === 2) {
       return <Create />;
     }
-    const { data, isLoading } = this.state;
+    const { data, isLoading,postData } = this.state;
     return (
       <SafeAreaView style={{ flex: 1, alignItems: "center" }}>
+        <View style={{marginTop:10,marginBottom:'15%'}}>
          <View style={styles.container}>
       {isLoading ? <ActivityIndicator/> : (
         <FlatList
           data={data}
           keyExtractor={(item) => item.toString()}
           renderItem={({ item }) => (
-            <View >
-            <Text>{item.name}</Text>
-            <Text>{item.email}</Text>            
-            <Image source={{uri:`${item.photourl}`}} style={{ height:250, width:250 }}/>
+              <Card style={styles.flatList}>  
+              <View style={{flexDirection:'row',alignItems:"center"}}>
+            <Image source={{uri:`${item.photourl}`}} style={{ height:100, width:100,borderRadius:50 }}/>
+            <Text style={{fontSize:20,marginLeft:30,marginRight:50}}>{item.name}</Text>          
             </View>
+            <View
+            style={{marginTop:10,borderBottomColor:'black',borderBottomWidth:0.25}}
+            />
+           </Card>
+          )}
+          
+        />
+      )}
+    </View>
+    
+    <View style={{flex:2.8,flexDirection:"row"}}>
+      {isLoading ? <ActivityIndicator/> : (
+        <FlatList
+        style={{padding:20}}
+          data={postData}
+          keyExtractor={(item, index) => String(index)}
+          renderItem={({ item }) => (
+              <Card style={styles.container}>  
+              <View style={{justifyContent:"center",alignItems:"center"}}>
+            <Image source={{uri:`${item.photopath}`}} style={{ height:200, width:200 }}/>
+            </View>
+           </Card>
           )}
         />
       )}
+    </View>
     </View>
         <View style={styles.footer}>
           <TouchableOpacity onPress={this.clickHandler}>
@@ -135,14 +171,14 @@ const styles = StyleSheet.create({
   container:{
     flex:1,
     justifyContent:'center',
-    alignItems:'center'
+    alignItems:'center',
   },
   footer: {
     flex: 1,
     flexDirection: "row",
     paddingHorizontal: 10,
     position: "absolute",
-    bottom: 3,
+    bottom: 0,
     height: "8%",
     alignItems: "center",
     backgroundColor: "#DDDDDD",

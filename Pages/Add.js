@@ -116,22 +116,25 @@ for (var i = 0; i < jsonData.length; i++) {
     photourl=counter.photourl;
     email=counter.email;
 }
-fetch('http://192.168.42.194:5000/details/', {
-	method: 'POST',
-	body: JSON.stringify({
-    name:name,
-    photourl:photourl,
-    email:email,
-	}),
-	headers: {
-		'Content-type': 'application/json; charset=UTF-8'
-	}
-}).catch(function (error) {
-	console.warn('Something went wrong.', error);
-});
+setTimeout(() => {
+  fetch('http://192.168.42.194:5000/details/', {
+    method: 'POST',
+    body: JSON.stringify({
+      name:name,
+      photourl:photourl,
+      email:email,
+    }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  }).catch(function (error) {
+    console.warn('Something went wrong.', error);
+  });
+
   this.setState({
     submit:2
   })
+}, 1000);
 }
   render() {
     if (this.state.submit === 2) {

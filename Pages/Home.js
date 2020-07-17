@@ -60,7 +60,6 @@ export class Home extends Component {
         this.setState({ data: json.post });
         console.log(this.state);
       })
-      .catch((error) => console.error(error))
       .finally(() => {
         this.setState({ isLoading: false });
       });
@@ -125,6 +124,9 @@ export class Home extends Component {
             </TouchableOpacity>
             <TouchableOpacity>
                 <Image source={require("../assets/share.png")} style={{ height:30, width:30,marginRight:15}}/>      
+            </TouchableOpacity>
+            <TouchableOpacity>
+                <Image source={require("../assets/download.png")} style={{ height:30, width:30,marginRight:15}}/>      
             </TouchableOpacity>
             </View>
             </Card>
