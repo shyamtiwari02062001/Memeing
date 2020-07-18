@@ -8,7 +8,10 @@ import {
   Image,
   SafeAreaView,
   TextInput,
+  ActivityIndicator,
+  FlatList
 } from "react-native";
+import {Card} from 'react-native-elements'
 import Home from "./Home";
 import Add from "./Add";
 import Profile from "./Profile";
@@ -18,10 +21,13 @@ class Search extends Component {
     super(props);
 
     this.state = {
+      data: [],
+      isLoading: true,
       number: 1,
       number1: 1,
       number2: 1,
       number3: 1,
+      search:'',
     };
   }
   clickHandler = () => {
@@ -45,6 +51,34 @@ class Search extends Component {
       number3: 2,
     });
   };
+  search=(inputText)=>{
+    this.setState({
+      search:inputText,
+    })
+    this.makeSearch();
+  }
+  makeSearch=()=>{
+    console.log(this.state.search)
+    fetch('http://192.168.42.194:5000/searchData/', {
+	method: 'POST',
+	body: JSON.stringify({
+    search:this.state.search,
+	}),
+	headers: {
+		'Content-type': 'application/json; charset=UTF-8'
+	}
+})
+  fetch('http://192.168.42.194:5000/search')
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({ data: json.profile });
+        console.log(this.state.data);
+      })
+      .finally(() => {
+        this.setState({ isLoading: false });
+      });
+
+  }
   render() {
     if (this.state.number === 2) {
       return <Home />;
@@ -59,15 +93,36 @@ class Search extends Component {
     if (this.state.number3 === 2) {
       return <Profile />;
     }
-
+    const { data, isLoading } = this.state;
     return (
       <SafeAreaView style={{ flex: 1, alignItems: "center" }}>
         <View style={styles.header}>
         <TextInput
       style={styles.search}
-      // onChangeText={text => onChangeText(text)}
+      value={this.state.search}
+      onChangeText={this.search}
     />
         </View>
+        <View style={{flex:2.8,marginTop:'25%',marginBottom:'16%'}}>
+      {isLoading ? <ActivityIndicator/> : (
+        <FlatList
+        style={{padding:20}}
+          data={data}
+          keyExtractor={(item, index) => String(index)}
+          renderItem={({ item }) => (
+            <Card style={styles.flatList}>  
+            <View style={{flexDirection:'row',alignItems:"center"}}>
+          <Image source={{uri:`${item.photourl}`}} style={{ height:100, width:100,borderRadius:50 }}/>
+          <Text style={{fontSize:20,marginLeft:30,marginRight:50}}>{item.name}</Text>          
+          </View>
+          <View
+          style={{marginTop:10,borderBottomColor:'black',borderBottomWidth:0.25}}
+          />
+         </Card>
+          )}
+        />
+      )}
+    </View>
       <View style={styles.footer}>
         <TouchableOpacity onPress={this.clickHandler}>
           <Image
@@ -106,6 +161,9 @@ class Search extends Component {
 }
 
 const styles = StyleSheet.create({
+  container:{
+    flex:1,
+  },
   header: {
     flex: 1,
     position: "absolute",
@@ -114,6 +172,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: "8%",
     justifyContent: "center",
+    marginBottom:50,
   },
   search:{ 
   width: '80%',
